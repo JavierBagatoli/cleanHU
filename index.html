@@ -56,6 +56,9 @@
 
       let colorIndex = 0;
 
+      let ultimoColorPintado = "";
+      let ultimoParrafo = 0;
+
       parrafos.forEach((parrafoOriginal, index) => {
         const limpio = parrafoOriginal.trim();
 
@@ -63,7 +66,14 @@
 
         if (mapaParrafos.has(limpio)) {
           // Ya existe: usar color del primero
-          const color = mapaParrafos.get(limpio);
+          let color = mapaParrafos.get(limpio);
+          
+          if(index === ultimoParrafo+1){
+            color = ultimoColorPintado;
+          }else{
+            ultimoColorPintado = color;
+          }
+
           output.push(`<span class="parrafo" style="background-color: ${color}">${escapeHTML(parrafoOriginal)}</span>`);
         } else {
           // Nuevo párrafo: asignar color y guardar
@@ -73,7 +83,6 @@
           colorIndex++;
         }
       });
-
       document.getElementById("outputText").innerHTML = output.join("\n");
     }
 
