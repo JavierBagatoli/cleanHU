@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Detector de Duplicados</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; background: #f4f4f4; }
+    textarea { width: 100%; height: 200px; margin-bottom: 1rem; }
+    button { padding: 0.5rem 1rem; font-size: 1rem; }
+    pre { background: #fff; padding: 1rem; white-space: pre-wrap; border: 1px solid #ccc; }
+  </style>
+</head>
+<body>
+  <h1>Reemplazar párrafos duplicados</h1>
+  <textarea id="inputText" placeholder="Pega aquí tu texto con varios párrafos..."></textarea>
+  <br />
+  <button onclick="procesarTexto()">Procesar</button>
+  <h2>Resultado:</h2>
+  <pre id="outputText"></pre>
+
+  <script>
+    function procesarTexto() {
+      const texto = document.getElementById("inputText").value;
+      const parrafos = texto.split(/\n\s*\n/); // Separar por párrafos
+      const vistos = new Set();
+      const resultado = parrafos.map(parrafo => {
+        const limpio = parrafo.trim();
+        if (vistos.has(limpio)) {
+          return "DUPLICADO";
+        } else {
+          vistos.add(limpio);
+          return parrafo;
+        }
+      });
+      document.getElementById("outputText").textContent = resultado.join("\n\n");
+    }
+  </script>
+</body>
+</html>
