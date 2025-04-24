@@ -69,7 +69,7 @@
           // Nuevo párrafo: asignar color y guardar
           const color = colores[colorIndex % colores.length];
           mapaParrafos.set(limpio, color);
-          output.push(`<span class="parrafo" style="background-color: ${color}">${escapeHTML(parrafoOriginal)}</span>`);
+          output.push(`<span class="parrafo"><p style="background-color: ${color}">${index}</p>${escapeHTML(parrafoOriginal)}</span>`);
           colorIndex++;
         }
       });
