@@ -64,7 +64,7 @@
 
       let indexPatron = -2;
       let index = 0;
-      let indexReverso = 0;
+      let colorBlock = "";
 
       for (let parrafo of parrafos) {
         const limpio = parrafo.trim();
@@ -81,24 +81,28 @@
 
         if (mapa.has(limpio)) {
           color = mapa.get(limpio); // Reutilizar color del primero
-          indexReverso = 0;
         } 
         
         let antiMargin = ""
 
         if(parrafos.includes(limpio)){
           let i = parrafos.indexOf(limpio);
-          console.log(i, index, "==")
           if(i !== index){
             console.log("posicion actual", i)
 
             if (indexPatron === i-1){
-              console.log("que pasa!")
-              indexReverso++;
               color = mapa.get(parrafos[i-1]);
+              if(colorBlock !== ""){
+                color = colorBlock
+              }
+              colorBlock = color
               antiMargin = "-1.7rem"
+            }else{
+              colorBlock = "";
             }
             indexPatron = i;
+          }else{
+            colorBlock = "";
           }
         } 
 
