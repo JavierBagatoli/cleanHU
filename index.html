@@ -6,91 +6,110 @@
   <title>Marcador de Párrafos Duplicados</title>
   <style>
     body {
-      font-family: sans-serif;
+      font-family: Arial, sans-serif;
       padding: 2rem;
-      background: #f4f4f4;
+      background: #f0f0f0;
     }
     textarea {
       width: 100%;
       height: 200px;
       margin-bottom: 1rem;
       font-family: monospace;
+      font-size: 14px;
     }
     button {
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-bottom: 20px;
     }
     .resultado {
-      margin-top: 2rem;
+      background: #ffffff;
       padding: 1rem;
-      background: #fff;
       border: 1px solid #ccc;
       white-space: pre-wrap;
     }
     .parrafo {
       display: block;
-      padding: 0.5rem;
-      margin-bottom: 0.5rem;
-      border-radius: 5px;
+      padding: 8px;
+      margin-bottom: 8px;
+      border-radius: 6px;
     }
   </style>
 </head>
 <body>
-  <h1>Detectar y Marcar Párrafos Duplicados</h1>
-  <textarea id="inputText" placeholder="Pega aquí tu texto con varios párrafos..."></textarea>
-  <br />
-  <button onclick="procesarTexto()">Marcar duplicados</button>
-  <div class="resultado" id="outputText"></div>
+  <h1>Resaltador de Párrafos Duplicados</h1>
+  <textarea id="inputText" placeholder="Pega aquí tu texto con varios párrafos separados por dobles saltos de línea..."></textarea>
+  <br>
+  <button onclick="resaltarDuplicados()">Resaltar duplicados</button>
+  <div id="outputText" class="resultado"></div>
 
   <script>
     const colores = [
-      "#ffcccc", "#ccffcc", "#ccccff", "#ffffcc", "#ffccff",
-      "#ccffff", "#ffd9b3", "#d9ffb3", "#b3d9ff", "#f4cccc"
+      "#ffeeba", "#d4edda", "#bee5eb", "#f8d7da", "#c3e6cb", "#d1ecf1",
+      "#f5c6cb", "#cce5ff", "#e2e3e5", "#f1f1f1"
     ];
 
-    function procesarTexto() {
-      const texto = document.getElementById("inputText").value;
-      const parrafos = texto.split(/\n\s*\n/); // Separar por párrafos dobles saltos de línea
-      const mapaParrafos = new Map();
-      const output = [];
-
-      let colorIndex = 0;
-
-      let ultimoColorPintado = "";
-      let ultimoParrafo = 0;
-
-      parrafos.forEach((parrafoOriginal, index) => {
-        const limpio = parrafoOriginal.trim();
-
-        if (limpio === "") return; // Omitir párrafos vacíos
-
-        if (mapaParrafos.has(limpio)) {
-          // Ya existe: usar color del primero
-          let color = mapaParrafos.get(limpio);
-          
-          if(index === ultimoParrafo+1){
-            color = ultimoColorPintado;
-          }else{
-            ultimoColorPintado = color;
-          }
-
-          output.push(`<span class="parrafo" style="background-color: ${color}">${escapeHTML(parrafoOriginal)}</span>`);
-        } else {
-          // Nuevo párrafo: asignar color y guardar
-          const color = colores[colorIndex % colores.length];
-          mapaParrafos.set(limpio, color);
-          output.push(`<span class="parrafo"><p style="background-color: ${color}">${index}</p>${escapeHTML(parrafoOriginal)}</span>`);
-          colorIndex++;
-        }
-      });
-      document.getElementById("outputText").innerHTML = output.join("\n");
-    }
-
-    // Función para evitar inyección HTML
     function escapeHTML(text) {
-      const div = document.createElement('div');
+      const div = document.createElement("div");
       div.textContent = text;
       return div.innerHTML;
+    }
+
+    function resaltarDuplicados() {
+      const texto = document.getElementById("inputText").value;
+      const parrafos = texto.split(/\n\s*\n/); // Separa por doble salto de línea
+      const mapa = new Map(); // Guarda párrafos únicos con su color
+      const output = [];
+      let colorIndex = 0;
+
+      let indexPatron = -2;
+      let index = 0;
+      let indexReverso = 0;
+
+      for (let parrafo of parrafos) {
+        const limpio = parrafo.trim();
+
+        if (limpio === "") continue; // Saltar vacíos
+
+        let color;
+
+        if (!mapa.has(limpio)) {
+          color = colores[colorIndex % colores.length];
+          mapa.set(limpio, color);
+          colorIndex++;
+        }
+
+        if (mapa.has(limpio)) {
+          color = mapa.get(limpio); // Reutilizar color del primero
+          indexReverso = 0;
+        } 
+        
+        let antiMargin = ""
+
+        if(parrafos.includes(limpio)){
+          let i = parrafos.indexOf(limpio);
+          console.log(i, index, "==")
+          if(i !== index){
+            console.log("posicion actual", i)
+
+            if (indexPatron === i-1){
+              console.log("que pasa!")
+              indexReverso++;
+              color = mapa.get(parrafos[i-1]);
+              antiMargin = "-1.7rem"
+            }
+            indexPatron = i;
+          }
+        } 
+
+        index++
+
+        output.push(
+          `<span class="parrafo" style="background-color:${color}; margin-top:${antiMargin};">${escapeHTML(parrafo)}</span>`
+        );
+      }
+
+      document.getElementById("outputText").innerHTML = output.join("\n");
     }
   </script>
 </body>
