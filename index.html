@@ -67,7 +67,7 @@
       let colorBlock = "";
 
       for (let parrafo of parrafos) {
-        const limpio = parrafo.trim();
+        const limpio = parrafo;
 
         if (limpio === "") continue; // Saltar vacíos
 
@@ -85,13 +85,14 @@
         
         let antiMargin = ""
 
-        if(parrafos.includes(limpio)){
-          let i = parrafos.indexOf(limpio);
+        if(parrafos.includes(parrafo)){
+          let i = parrafos.indexOf(parrafo);
+
           if(i !== index){
-            console.log("posicion actual", i)
 
             if (indexPatron === i-1){
               color = mapa.get(parrafos[i-1]);
+
               if(colorBlock !== ""){
                 color = colorBlock
               }
@@ -112,7 +113,6 @@
           `<span class="parrafo" style="background-color:${color}; margin-top:${antiMargin};">${escapeHTML(parrafo)}</span>`
         );
       }
-
       document.getElementById("outputText").innerHTML = output.join("\n");
     }
   </script>
