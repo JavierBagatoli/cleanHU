@@ -6,16 +6,10 @@
   <title>Marcador de Párrafos Duplicados</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
       padding: 2rem;
-      background: #f0f0f0;
-    }
-    textarea {
-      width: 100%;
-      height: 200px;
-      margin-bottom: 1rem;
-      font-family: monospace;
-      font-size: 14px;
+      background-color: #121212;
+      color: #f0f0f0;
+      font-family: Arial, sans-serif;
     }
     button {
       padding: 10px 20px;
@@ -23,16 +17,34 @@
       margin-bottom: 20px;
     }
     .resultado {
-      background: #ffffff;
+      background: #1e1e1e;
       padding: 1rem;
       border: 1px solid #ccc;
       white-space: pre-wrap;
+      color: #121212;
     }
     .parrafo {
       display: block;
       padding: 8px;
       margin-bottom: 8px;
       border-radius: 6px;
+    }
+    .bold{
+      font-weight: bolder;
+      font-size: 1.2rem;
+    }
+    textarea {
+      margin-bottom: 1rem;
+      font-family: monospace;
+      font-size: 14px;
+      width: 100%;
+      height: 300px;
+      margin-top: 20px;
+      background: #1e1e1e;
+      color: #fff;
+      border: 1px solid #444;
+      padding: 10px;
+      border-radius: 4px;
     }
   </style>
 </head>
@@ -41,6 +53,7 @@
   <textarea id="inputText" placeholder="Pega aquí tu texto con varios párrafos separados por dobles saltos de línea..."></textarea>
   <br>
   <button onclick="resaltarDuplicados()">Resaltar duplicados</button>
+  <button onclick="openURL()">Diagramas Merchaid</button>
   <div id="outputText" class="resultado"></div>
 
   <script>
@@ -57,7 +70,7 @@
 
     function resaltarDuplicados() {
       const texto = document.getElementById("inputText").value;
-      const parrafos = texto.split(/\n\s*\n/); // Separa por doble salto de línea
+      const parrafos = texto.split(/\n/); // Separa por doble salto de línea
       const mapa = new Map(); // Guarda párrafos únicos con su color
       const output = [];
       let colorIndex = 0;
@@ -110,10 +123,14 @@
         index++
 
         output.push(
-          `<span class="parrafo" style="background-color:${color}; margin-top:${antiMargin};">${escapeHTML(parrafo)}</span>`
+          `<span class="parrafo ${parrafo.toLowerCase().includes('escenario')?'bold':''}" style="background-color:${color}; margin-top:${antiMargin};">${escapeHTML(parrafo)}</span>`
         );
       }
       document.getElementById("outputText").innerHTML = output.join("\n");
+    }
+
+    function openURL(){
+      window.open("https://javierbagatoli.github.io/MermaidChartFast/", "_blank")
     }
   </script>
 </body>
