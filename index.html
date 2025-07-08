@@ -26,7 +26,6 @@
     .parrafo {
       display: block;
       padding: 8px;
-      margin-bottom: 8px;
       border-radius: 6px;
     }
     .bold{
@@ -45,6 +44,11 @@
       border: 1px solid #444;
       padding: 10px;
       border-radius: 4px;
+    }
+    .squareClass{
+      border-radius: 0px !important;
+      padding-top: 3px;
+      padding-bottom: 3px;
     }
   </style>
 </head>
@@ -73,17 +77,20 @@
       const parrafos = texto.split(/\n/); // Separa por doble salto de línea
       const mapa = new Map(); // Guarda párrafos únicos con su color
       const output = [];
+      const textoClean = []
       let colorIndex = 0;
 
       let indexPatron = -2;
       let index = 0;
       let colorBlock = "";
 
-      for (let parrafo of parrafos) {
+      for(let parrafo of parrafos) {
+        if (parrafo.trim() === "") continue; // Saltar vacíos
+        textoClean.push(parrafo.trim())
+      }
+
+      for (let parrafo of textoClean) {
         const limpio = parrafo;
-
-        if (limpio === "") continue; // Saltar vacíos
-
         let color;
 
         if (!mapa.has(limpio)) {
@@ -97,20 +104,21 @@
         } 
         
         let antiMargin = ""
-
-        if(parrafos.includes(parrafo)){
-          let i = parrafos.indexOf(parrafo);
-
+        let squareClass = ""
+        console.log(textoClean)
+        if(textoClean.includes(limpio)){
+          let i = textoClean.indexOf(limpio);
+          console.log(i, index, indexPatron)
           if(i !== index){
-
             if (indexPatron === i-1){
-              color = mapa.get(parrafos[i-1]);
+              color = mapa.get(textoClean[i-1]);
 
               if(colorBlock !== ""){
                 color = colorBlock
               }
               colorBlock = color
-              antiMargin = "-1.7rem"
+              antiMargin = "-1.2rem"
+              squareClass = "squareClass"
             }else{
               colorBlock = "";
             }
@@ -123,7 +131,7 @@
         index++
 
         output.push(
-          `<span class="parrafo ${parrafo.toLowerCase().includes('escenario')?'bold':''}" style="background-color:${color}; margin-top:${antiMargin};">${escapeHTML(parrafo)}</span>`
+          `<span class="parrafo ${squareClass} ${parrafo.toLowerCase().startsWith('escenario')?'bold':''}" style="background-color:${color}; margin-top:${antiMargin};">${escapeHTML(parrafo)}</span>`
         );
       }
       document.getElementById("outputText").innerHTML = output.join("\n");
