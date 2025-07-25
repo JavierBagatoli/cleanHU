@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Comparador de Código</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #e0e0e0;
+      font-family: monospace;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #90caf9;
+    }
+
+    textarea {
+      width: 100%;
+      height: 120px;
+      background-color: #1e1e1e;
+      color: #ffffff;
+      border: 1px solid #444;
+      margin-bottom: 10px;
+      padding: 10px;
+      resize: vertical;
+      font-size: 16px;
+    }
+
+    button {
+      background-color: #1976d2;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    pre {
+      background-color: #1e1e1e;
+      padding: 20px;
+      border-radius: 5px;
+      white-space: pre-wrap;
+      margin-top: 20px;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .highlight {
+      background-color: #004d40;
+      color: #b2ff59;
+      font-weight: bold;
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+
+    .highlight2 {
+      background-color: #000e4d;
+      color: #59f9ff;
+      font-weight: bold;
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+
+    .highlight3 {
+      background-color: #454d00;
+      color: #f4ff59;
+      font-weight: bold;
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+
+    .light2{
+        color: #b2ff59;
+    }
+
+    .light3{
+        color: #59f9ff;
+    }
+
+    .light4{
+        color: #f4ff59;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      div{
+        width: 95%;
+      }
+    }
+
+    @media (max-width: 800px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Comparador de Código</h1>
+  <div class="container">
+    <div>
+      <label for="code1">Código 1:</label>
+      <textarea id="code1" placeholder="Ingresa el primer bloque de código..."></textarea>
+    </div>
+    <div>
+      <label for="code2">Código 2:</label>
+      <textarea id="code2" placeholder="Ingresa el segundo bloque de código..."></textarea>
+    </div>
+    <div>
+      <label for="code3">Código 3:</label>
+      <textarea id="code3" placeholder="Ingresa el segundo bloque de código..."></textarea>
+    </div>
+    <div>
+      <label for="code4">Código 4:</label>
+      <textarea id="code4" placeholder="Ingresa el segundo bloque de código..."></textarea>
+    </div>
+  </div>
+  <button onclick="compararCodigos()">Comparar</button>
+
+  <h2>Resultado combinado con código repetido:</h2>
+  <pre id="resultado"></pre>
+
+  <script>
+    function compararCodigos() {
+        const code1 = document.getElementById('code1').value.split('\n').map(line => line.trim());
+        const code2 = document.getElementById('code2').value.split('\n').map(line => line.trim());
+        const code3 = document.getElementById('code3').value.split('\n').map(line => line.trim());
+        const code4 = document.getElementById('code4').value.split('\n').map(line => line.trim());
+
+
+        const combined = [...new Set([...code1, ...code2,...code3, ...code4])];
+        const repetidos12 = code2.filter(line => code1.includes(line) && line !== '');
+        const repetidos13 = code3.filter(line => code1.includes(line) && line !== '');
+        const repetidos14 = code4.filter(line => code1.includes(line) && line !== '');
+
+        const repetidosClean13 = repetidos13.filter(line => !code2.includes(line));
+        
+        const repetidosC14 = repetidos14.filter(line => !code2.includes(line));
+        const repetidosClean14 = repetidosC14.filter(line => !code3.includes(line));
+        
+        const resultadoHTML = combined.map(line => {
+            if (repetidos12.includes(line)) {
+                return `<span class="highlight">${line}</span>`;
+            } else if (repetidosClean13.includes(line)) {
+                return `<span class="highlight2">${line}</span>`;
+            } else if (repetidosClean14.includes(line)) {
+                return `<span class="highlight3">${line}</span>`;
+            }  else {
+                if (code2.includes(line)) {
+                    return `<span class="light2">${line}</span>`;
+                } else if (code3.includes(line)) {
+                    return `<span class="light3">${line}</span>`;
+                } else if (code4.includes(line)) {
+                    return `<span class="light4">${line}</span>`;
+                }  else {
+                    return line;
+                }
+            }
+        }).join('\n');
+
+        document.getElementById('resultado').innerHTML = resultadoHTML;
+    }
+  </script>
+</body>
+</html>
